@@ -1,10 +1,13 @@
-import { stripSlashes } from '@feathersjs/commons';
 import makeCote from './cote';
 import uuid from 'uuid/v4';
 import makeDebug from 'debug';
 import { LocalService, RemoteService } from './service';
 
 const debug = makeDebug('feathers-distributed');
+
+function stripSlashes(name) {
+    return name.replace(/^(\/*)|(\/*)$/g, '');
+}
 
 function init (options) {
   return function () {
