@@ -9,6 +9,8 @@
 
 > Distribute your Feathers services as microservices
 
+**Patched to support [portfinder](https://github.com/alex-prod/node-portfinder) highestPort crash
+
 **This plugin is under development and currently in beta-test, updates will be pushed frequently.
 As a consequence it should be considered unstable, not yet ready for production use.
 Although we try to avoid this wherever possible, `0.x` versions on the master branch can promote breaking changes in the API.**
@@ -16,7 +18,7 @@ Although we try to avoid this wherever possible, `0.x` versions on the master br
 The [`master`](https://github.com/kalisio/feathers-distributed) branch and 0.3.x version is expected to work with [Feathers v3](https://buzzard.docs.feathersjs.com/) (a.k.a. Buzzard).
 The [`auk`](https://github.com/kalisio/feathers-distributed/tree/auk) branch and 0.2.x version is expected to work with [Feathers v2](https://auk.docs.feathersjs.com/) (a.k.a. Auk).
 
-This plugin relies on [cote](https://github.com/dashersw/cote) and takes benefits of it:
+This plugin relies on [cote](https://github.com/alex-prod/cote) and takes benefits of it:
 - **Zero-configuration:** no IP addresses, no ports, no routing to configure
 - **Decentralized:** No fixed parts, no "manager" nodes, no single point of
                      failure
@@ -26,7 +28,7 @@ This plugin relies on [cote](https://github.com/dashersw/cote) and takes benefit
 - **Performant:** Process thousands of messages per second
 
 **cote** requires your cloud provider to support IP broadcast or multicast. You can still have the same functionality
-with [Weave overlay networks](https://github.com/weaveworks/weave), eg on Docker's Cloud. In any other cases you can use [centralized discovery](https://github.com/dashersw/cote#using-centralized-discovery-tools).
+with [Weave overlay networks](https://github.com/weaveworks/weave), eg on Docker's Cloud. In any other cases you can use [centralized discovery](https://github.com/alex-prod/cote#using-centralized-discovery-tools).
 
 > cote works out of the box with Docker Swarm and Docker Cloud but we are seeking for volunteers to test this module under various Cloud providers like AWS, Google Cloud, etc. Please open an issue if you'd like to do so and report your findings.
 
@@ -35,7 +37,7 @@ You might find this [presentation](http://slides.com/armaganamcalar/apiconf-zero
 ## Installation
 
 ```
-npm install @kalisio/feathers-distributed --save
+npm install https://github.com/alex-prod/feathers-distributed --save
 ```
 
 **To get the latest version please use the following command:**
@@ -45,7 +47,7 @@ npm install https://github.com/kalisio/feathers-distributed --save
 
 `feathers-distributed` is as least intrusive as possible so for most use cases you simply need to configure it along with your applications holding your services:
 ```javascript
-const distribution = require('@kalisio/feathers-distributed');
+const distribution = require('feathers-distributed');
 ...
 app.configure(hooks());
 app.configure(socketio());
@@ -58,16 +60,16 @@ app.configure(distribution());
 ![Microservice architecture](https://cdn.rawgit.com/kalisio/feathers-distributed/dd436d9e1a70b66607a893ba9efeaeab339fd50e/Architecture%20Diagram.svg)
 
 When the plugin initializes the following is done for your app:
-* creates a [publisher](https://github.com/dashersw/cote#creating-a-publisher) to dispatch its *locally registered services* to other nodes. 
-* creates a [subscriber](https://github.com/dashersw/cote#creating-a-subscriber) to be aware of *remotely registered services* from other nodes. 
+* creates a [publisher](https://github.com/alex-prod/cote#creating-a-publisher) to dispatch its *locally registered services* to other nodes. 
+* creates a [subscriber](https://github.com/alex-prod/cote#creating-a-subscriber) to be aware of *remotely registered services* from other nodes. 
 
 What is done by overriding `app.use` is the following: 
-* each *local* Feathers service of your app creates a [responder](https://github.com/dashersw/cote#creating-a-responder) to handle incoming requests from other nodes.
-* each *local* Feathers service of your app creates a [publisher](https://github.com/dashersw/cote#creating-a-publisher) to dispatch service-level events to other nodes.
+* each *local* Feathers service of your app creates a [responder](https://github.com/alex-prod/cote#creating-a-responder) to handle incoming requests from other nodes.
+* each *local* Feathers service of your app creates a [publisher](https://github.com/alex-prod/cote#creating-a-publisher) to dispatch service-level events to other nodes.
 
 What is done when your app is aware of a new remotely registered service is the following: 
-* creates a local Feathers service *acting as a proxy* to the remote one by creating a [requester](https://github.com/dashersw/cote#creating-a-requester) to send incoming requests to other nodes.
-* this proxy service also creates a [subscriber](https://github.com/dashersw/cote#creating-a-subscriber) to be aware of service-level events coming from other nodes.
+* creates a local Feathers service *acting as a proxy* to the remote one by creating a [requester](https://github.com/alex-prod/cote#creating-a-requester) to send incoming requests to other nodes.
+* this proxy service also creates a [subscriber](https://github.com/alex-prod/cote#creating-a-subscriber) to be aware of service-level events coming from other nodes.
 
 ## Example
 
