@@ -1,12 +1,12 @@
 import { stripSlashes } from '@feathersjs/commons';
-import makeCote from 'cote';
+import makeCote from './cote';
 import uuid from 'uuid/v4';
 import makeDebug from 'debug';
 import { LocalService, RemoteService } from './service';
 
 const debug = makeDebug('feathers-distributed');
 
-export default function init (options) {
+function init (options) {
   return function () {
     const distributionOptions = Object.assign(
       {
@@ -106,3 +106,6 @@ export default function init (options) {
 
 init.RemoteService = RemoteService;
 init.LocalService = LocalService;
+
+module.exports = init;
+module.exports.default = init;
